@@ -38,7 +38,7 @@ func NewApp(
 		road:        road,
 		cfg:         cfg,
 		httpServer:  httpServer,
-		engine:      gin.New(),
+		engine:      gin.Default(),
 		store:       store,
 		redisClient: redisClient,
 	}
@@ -48,12 +48,14 @@ func NewApp(
 func (a *App) Serve(port int) error {
 	// 设置日志
 	log.InitLog()
-	a.registerRouter() // 注册路由
+	a.registerSwagger(a.engine) // 注册swagger
+	a.registerRouter()          // 注册路由
 	svr := &http.Server{
 		Addr:              fmt.Sprintf(":%d", port),
 		Handler:           a.engine,
 		ReadHeaderTimeout: 5 * time.Second,
 	}
+	gin.SetMode(gin.DebugMode) // 设置gin模式
 	// 异步启动http server
 	go func() {
 		if err := svr.ListenAndServe(); err != nil {
