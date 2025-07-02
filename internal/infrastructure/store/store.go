@@ -33,3 +33,8 @@ func NewStore(cfg *DBConfig) (*Store, error) {
 	// 自动建表
 	return ss, ss.db.AutoMigrate(all.Tables()...)
 }
+
+// GetDB 获取DB
+func (s *Store) GetDB() *gorm.DB {
+	return s.db
+}

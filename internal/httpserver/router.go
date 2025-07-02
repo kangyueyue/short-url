@@ -18,5 +18,9 @@ func (s *Server) GetRounter() map[string]*RouterConfig {
 			Method:  http.MethodGet,
 			Handler: s.HelloSvr.Hello,
 		},
+		"short_url/set": {
+			Method:  http.MethodPost,
+			Handler: s.ShortUrlSvr.Set,
+		},
 	}
 }
