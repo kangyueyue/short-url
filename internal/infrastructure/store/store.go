@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/kangyueyue/short-url/internal/models"
+	"github.com/kangyueyue/short-url/internal/models/all"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -31,5 +31,5 @@ func NewStore(cfg *DBConfig) (*Store, error) {
 	}
 	ss := &Store{db: db}
 	// 自动建表
-	return ss, ss.db.AutoMigrate(&models.Model{})
+	return ss, ss.db.AutoMigrate(all.Tables()...)
 }

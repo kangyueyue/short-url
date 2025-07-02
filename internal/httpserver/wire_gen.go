@@ -9,17 +9,20 @@ package httpserver
 import (
 	"github.com/google/wire"
 	"github.com/kangyueyue/short-url/internal/httpserver/hello"
+	"github.com/kangyueyue/short-url/internal/httpserver/short_url"
+	"github.com/kangyueyue/short-url/internal/infrastructure/store"
 )
 
 // Injectors from wire.go:
 
 // InitialHttpServer 初始化服务
-func InitialHttpServer() *Server {
+func InitialHttpServer(store2 *store.Store) *Server {
 	helloSvr := hello.NewHelloSvr()
-	server := NewServer(helloSvr)
+	shortUrlSvr := short_url.NewShortUrlSvr(store2)
+	server := NewServer(helloSvr, shortUrlSvr)
 	return server
 }
 
 // wire.go:
 
-var SvrSet = wire.NewSet(hello.NewHelloSvr)
+var SvrSet = wire.NewSet(hello.NewHelloSvr, short_url.NewShortUrlSvr)

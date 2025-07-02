@@ -25,11 +25,11 @@ func InitApp(road2 string) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	server := httpserver.InitialHttpServer()
 	store, err := config.ProvideStore(configConfig)
 	if err != nil {
 		return nil, err
 	}
+	server := httpserver.InitialHttpServer(store)
 	client := config.ProvideRedisClient(configConfig)
 	app := NewApp(roadRoad, configConfig, server, store, client)
 	return app, nil
