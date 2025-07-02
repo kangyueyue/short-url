@@ -14,8 +14,9 @@ import (
 // @Accept json
 // @Produce json
 // @Param request body vo.SetVo true "请求参数"
-// @Success 200 {array} models.PShortUrlData "成功返回短链接信息"
-// @Failure 500 {string} string "服务器内部错误"
+// @Success 200 {object} http.Response{data=[]models.PShortUrlData} "成功返回短链接信息"
+// @Failure 500 {object} http.Response "服务器内部错误"
+// @Router /short_url/set [post]
 func (s *ShortUrlSvr) Set(c *gin.Context) {
 	// 从请求中获取body
 	body := &vo.SetVo{}
@@ -38,8 +39,8 @@ func (s *ShortUrlSvr) Set(c *gin.Context) {
 		bizs = append(bizs, biz)
 	}
 	db := s.store.GetDB().WithContext(c)
-	if err := db.CreateInBatches(bizs, len(bizs)); err != nil {
-		http.Fail(c, "存储短链失败")
+	if err := db.CreateInBatches(bizs, len(bizs)).Error; err != nil { // 注意添加 .Error
+		http.Fail(c, "存储短链失败: "+err.Error())
 		return
 	}
 	http.Success(c, bizs)

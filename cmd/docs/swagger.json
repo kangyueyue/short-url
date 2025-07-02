@@ -26,6 +26,193 @@
                     }
                 }
             }
+        },
+        "/short_url/get": {
+            "post": {
+                "description": "根据短链接获取原始长链接",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "短链接"
+                ],
+                "summary": "获取长链接",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.GetVO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回长链接信息",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_kangyueyue_short-url_internal_http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.PShortUrlData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_kangyueyue_short-url_internal_http.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/short_url/set": {
+            "post": {
+                "description": "批量创建短链接，将长链接转换为短链接",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "短链接"
+                ],
+                "summary": "创建短链接",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.SetVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功返回短链接信息",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_kangyueyue_short-url_internal_http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/models.PShortUrlData"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_kangyueyue_short-url_internal_http.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_kangyueyue_short-url_internal_http.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PShortUrlData": {
+            "type": "object",
+            "properties": {
+                "clientId": {
+                    "description": "用户id",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "expireAt": {
+                    "description": "过期时间",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "longUrl": {
+                    "description": "长链-使用utf8mb4_bin字符集，区分大小写",
+                    "type": "string"
+                },
+                "shortUrl": {
+                    "description": "短链-使用utf8mb4_bin字符集，区分大小写",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.GetVO": {
+            "type": "object",
+            "required": [
+                "clientId",
+                "shortUrl"
+            ],
+            "properties": {
+                "clientId": {
+                    "type": "string"
+                },
+                "shortUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.SetVo": {
+            "type": "object",
+            "required": [
+                "clientId",
+                "longUrls"
+            ],
+            "properties": {
+                "clientId": {
+                    "type": "string"
+                },
+                "longUrls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
         }
     }
 }

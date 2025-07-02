@@ -1,3 +1,57 @@
+definitions:
+  github_com_kangyueyue_short-url_internal_http.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  models.PShortUrlData:
+    properties:
+      clientId:
+        description: 用户id
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      expireAt:
+        description: 过期时间
+        type: string
+      id:
+        type: integer
+      longUrl:
+        description: 长链-使用utf8mb4_bin字符集，区分大小写
+        type: string
+      shortUrl:
+        description: 短链-使用utf8mb4_bin字符集，区分大小写
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  vo.GetVO:
+    properties:
+      clientId:
+        type: string
+      shortUrl:
+        type: string
+    required:
+    - clientId
+    - shortUrl
+    type: object
+  vo.SetVo:
+    properties:
+      clientId:
+        type: string
+      longUrls:
+        items:
+          type: string
+        type: array
+    required:
+    - clientId
+    - longUrls
+    type: object
 info:
   contact: {}
 paths:
@@ -16,4 +70,68 @@ paths:
       summary: Hello 示例接口
       tags:
       - 测试
+  /short_url/get:
+    post:
+      consumes:
+      - application/json
+      description: 根据短链接获取原始长链接
+      parameters:
+      - description: 请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/vo.GetVO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回长链接信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_kangyueyue_short-url_internal_http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.PShortUrlData'
+              type: object
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/github_com_kangyueyue_short-url_internal_http.Response'
+      summary: 获取长链接
+      tags:
+      - 短链接
+  /short_url/set:
+    post:
+      consumes:
+      - application/json
+      description: 批量创建短链接，将长链接转换为短链接
+      parameters:
+      - description: 请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/vo.SetVo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回短链接信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_kangyueyue_short-url_internal_http.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.PShortUrlData'
+                  type: array
+              type: object
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/github_com_kangyueyue_short-url_internal_http.Response'
+      summary: 创建短链接
+      tags:
+      - 短链接
 swagger: "2.0"

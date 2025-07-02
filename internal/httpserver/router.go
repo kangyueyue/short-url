@@ -22,5 +22,13 @@ func (s *Server) GetRounter() map[string]*RouterConfig {
 			Method:  http.MethodPost,
 			Handler: s.ShortUrlSvr.Set,
 		},
+		"short_url/get": {
+			Method:  http.MethodPost,
+			Handler: s.ShortUrlSvr.Get,
+		},
+		"ss/:id": {
+			Method:  http.MethodGet,
+			Handler: s.RedirectSvr.Redirect,
+		},
 	}
 }

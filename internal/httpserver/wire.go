@@ -8,6 +8,7 @@ package httpserver
 import (
 	"github.com/google/wire"
 	"github.com/kangyueyue/short-url/internal/httpserver/hello"
+	"github.com/kangyueyue/short-url/internal/httpserver/redirect"
 	"github.com/kangyueyue/short-url/internal/httpserver/short_url"
 	"github.com/kangyueyue/short-url/internal/infrastructure/store"
 )
@@ -15,6 +16,7 @@ import (
 var SvrSet = wire.NewSet(
 	hello.NewHelloSvr,
 	short_url.NewShortUrlSvr,
+	redirect.NewRedirectSvr,
 )
 
 // InitialHttpServer 初始化服务

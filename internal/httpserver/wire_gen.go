@@ -9,6 +9,7 @@ package httpserver
 import (
 	"github.com/google/wire"
 	"github.com/kangyueyue/short-url/internal/httpserver/hello"
+	"github.com/kangyueyue/short-url/internal/httpserver/redirect"
 	"github.com/kangyueyue/short-url/internal/httpserver/short_url"
 	"github.com/kangyueyue/short-url/internal/infrastructure/store"
 )
@@ -19,10 +20,11 @@ import (
 func InitialHttpServer(store2 *store.Store) *Server {
 	helloSvr := hello.NewHelloSvr()
 	shortUrlSvr := short_url.NewShortUrlSvr(store2)
-	server := NewServer(helloSvr, shortUrlSvr)
+	redirectSvr := redirect.NewRedirectSvr(store2)
+	server := NewServer(helloSvr, shortUrlSvr, redirectSvr)
 	return server
 }
 
 // wire.go:
 
-var SvrSet = wire.NewSet(hello.NewHelloSvr, short_url.NewShortUrlSvr)
+var SvrSet = wire.NewSet(hello.NewHelloSvr, short_url.NewShortUrlSvr, redirect.NewRedirectSvr)
