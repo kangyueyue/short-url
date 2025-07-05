@@ -38,6 +38,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/short_url/del": {
+            "delete": {
+                "description": "根据短链标识和客户端ID删除对应的短链",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "短链接"
+                ],
+                "summary": "删除短链",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "客户端ID",
+                        "name": "client_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "删除请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.DelVo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除成功"
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_kangyueyue_short-url_internal_http.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/short_url/get": {
             "post": {
                 "description": "根据短链接获取原始长链接",
@@ -60,6 +104,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/vo.GetVO"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "客户端ID",
+                        "name": "client_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -79,6 +130,53 @@ const docTemplate = `{
                                     }
                                 }
                             ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_kangyueyue_short-url_internal_http.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/short_url/list": {
+            "get": {
+                "description": "根据client_id获取对应的短链列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "短链接"
+                ],
+                "summary": "获取短链列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "客户端ID",
+                        "name": "client_id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "短链列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.PShortUrlData"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_kangyueyue_short-url_internal_http.Response"
                         }
                     },
                     "500": {
@@ -112,6 +210,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/vo.SetVo"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "客户端ID",
+                        "name": "client_id",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -159,6 +264,18 @@ const docTemplate = `{
                 }
             }
         },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
         "models.PShortUrlData": {
             "type": "object",
             "properties": {
@@ -170,7 +287,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "deletedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "expireAt": {
                     "description": "过期时间",
@@ -192,16 +309,27 @@ const docTemplate = `{
                 }
             }
         },
-        "vo.GetVO": {
+        "vo.DelVo": {
             "type": "object",
             "required": [
-                "clientId",
                 "shortUrl"
             ],
             "properties": {
-                "clientId": {
-                    "type": "string"
+                "isDisk": {
+                    "description": "是否删除磁盘文件",
+                    "type": "boolean"
                 },
+                "shortUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.GetVO": {
+            "type": "object",
+            "required": [
+                "shortUrl"
+            ],
+            "properties": {
                 "shortUrl": {
                     "type": "string"
                 }

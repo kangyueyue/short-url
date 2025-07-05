@@ -21,7 +21,7 @@ func Success(c *gin.Context, data interface{}, msg ...string) {
 		message = strings.Join(msg, " ")
 	}
 	c.JSON(http.StatusOK, Response{
-		Code: 200,
+		Code: http.StatusOK,
 		Msg:  message,
 		Data: data,
 	})
@@ -29,8 +29,8 @@ func Success(c *gin.Context, data interface{}, msg ...string) {
 
 // Fail 失败-500
 func Fail(c *gin.Context, msg ...string) {
-	c.JSON(http.StatusOK, Response{
-		Code: 500,
+	c.JSON(http.StatusInternalServerError, Response{
+		Code: http.StatusInternalServerError,
 		Msg:  strings.Join(msg, " "),
 		Data: nil,
 	})

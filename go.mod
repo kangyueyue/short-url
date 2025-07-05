@@ -6,7 +6,6 @@ require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/gin-gonic/gin v1.10.1
 	github.com/google/wire v0.6.0
-	github.com/jinzhu/gorm v1.9.16
 	github.com/kangyueyue/road v1.0.0
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/sirupsen/logrus v1.9.3

@@ -8,12 +8,14 @@ import (
 	"time"
 )
 
+// Set goDoc
 // @Summary 创建短链接
 // @Description 批量创建短链接，将长链接转换为短链接
 // @Tags 短链接
 // @Accept json
 // @Produce json
 // @Param request body vo.SetVo true "请求参数"
+// @Param client_id header string true "客户端ID"
 // @Success 200 {object} http.Response{data=[]models.PShortUrlData} "成功返回短链接信息"
 // @Failure 500 {object} http.Response "服务器内部错误"
 // @Router /short_url/set [post]

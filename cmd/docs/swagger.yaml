@@ -7,6 +7,14 @@ definitions:
       msg:
         type: string
     type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
   models.PShortUrlData:
     properties:
       clientId:
@@ -15,7 +23,7 @@ definitions:
       createdAt:
         type: string
       deletedAt:
-        type: string
+        $ref: '#/definitions/gorm.DeletedAt'
       expireAt:
         description: 过期时间
         type: string
@@ -30,14 +38,21 @@ definitions:
       updatedAt:
         type: string
     type: object
-  vo.GetVO:
+  vo.DelVo:
     properties:
-      clientId:
-        type: string
+      isDisk:
+        description: 是否删除磁盘文件
+        type: boolean
       shortUrl:
         type: string
     required:
-    - clientId
+    - shortUrl
+    type: object
+  vo.GetVO:
+    properties:
+      shortUrl:
+        type: string
+    required:
     - shortUrl
     type: object
   vo.SetVo:
@@ -70,6 +85,35 @@ paths:
       summary: Hello 示例接口
       tags:
       - 测试
+  /short_url/del:
+    delete:
+      consumes:
+      - application/json
+      description: 根据短链标识和客户端ID删除对应的短链
+      parameters:
+      - description: 客户端ID
+        in: header
+        name: client_id
+        required: true
+        type: string
+      - description: 删除请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/vo.DelVo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除成功
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/github_com_kangyueyue_short-url_internal_http.Response'
+      summary: 删除短链
+      tags:
+      - 短链接
   /short_url/get:
     post:
       consumes:
@@ -82,6 +126,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/vo.GetVO'
+      - description: 客户端ID
+        in: header
+        name: client_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -101,6 +150,37 @@ paths:
       summary: 获取长链接
       tags:
       - 短链接
+  /short_url/list:
+    get:
+      consumes:
+      - application/json
+      description: 根据client_id获取对应的短链列表
+      parameters:
+      - description: 客户端ID
+        in: header
+        name: client_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 短链列表
+          schema:
+            items:
+              $ref: '#/definitions/models.PShortUrlData'
+            type: array
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/github_com_kangyueyue_short-url_internal_http.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/github_com_kangyueyue_short-url_internal_http.Response'
+      summary: 获取短链列表
+      tags:
+      - 短链接
   /short_url/set:
     post:
       consumes:
@@ -113,6 +193,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/vo.SetVo'
+      - description: 客户端ID
+        in: header
+        name: client_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:

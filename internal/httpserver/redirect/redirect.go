@@ -17,7 +17,7 @@ func (r *RedirectSvr) Redirect(c *gin.Context) {
 	var bizs []*models.PShortUrlData
 
 	// 查询所有匹配记录并按创建时间降序排序
-	if err := db.Where("short_url = ? AND client_id = ?", shortUrl, "aabbccc").
+	if err := db.Where("short_url = ? AND client_id = ?", shortUrl, "zikangzuo").
 		Order("created_at DESC"). // 按创建时间降序
 		Find(&bizs).Error; err != nil {
 		http2.Fail(c, "短链不存在: "+err.Error())
@@ -29,7 +29,6 @@ func (r *RedirectSvr) Redirect(c *gin.Context) {
 		http2.Fail(c, "短链不存在")
 		return
 	}
-	fmt.Print("长度", len(bizs))
 
 	if len(bizs) > 1 {
 		fmt.Print("Found multiple records for short URL: %s", shortUrl)
