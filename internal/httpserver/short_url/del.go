@@ -19,10 +19,14 @@ import (
 // @Failure 500 {object} http.Response "服务器内部错误"
 // @Router /short_url/del [delete]
 func (s *ShortUrlSvr) Del(c *gin.Context) {
-	client_id := c.GetHeader("client_id")
 	var delVo *vo2.DelVo
 	if err := c.ShouldBindJSON(&delVo); err != nil {
 		http.Fail(c, "参数错误")
+		return
+	}
+	client_id := c.GetHeader("client_id")
+	if client_id == "" {
+		http.Fail(c, "缺少请求头")
 		return
 	}
 	db := s.store.GetDB().WithContext(c)

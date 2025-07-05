@@ -142,7 +142,7 @@ const docTemplate = `{
             }
         },
         "/short_url/list": {
-            "get": {
+            "post": {
                 "description": "根据client_id获取对应的短链列表",
                 "consumes": [
                     "application/json"
@@ -161,6 +161,15 @@ const docTemplate = `{
                         "name": "client_id",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "description": "请求参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/vo.GetVO"
+                        }
                     }
                 ],
                 "responses": {
@@ -189,7 +198,7 @@ const docTemplate = `{
             }
         },
         "/short_url/set": {
-            "post": {
+            "put": {
                 "description": "批量创建短链接，将长链接转换为短链接",
                 "consumes": [
                     "application/json"
@@ -324,27 +333,38 @@ const docTemplate = `{
                 }
             }
         },
+        "vo.FilterVo": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "description": "字段名",
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.GetVO": {
             "type": "object",
-            "required": [
-                "shortUrl"
-            ],
             "properties": {
-                "shortUrl": {
-                    "type": "string"
+                "filter": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.FilterVo"
+                    }
                 }
             }
         },
         "vo.SetVo": {
             "type": "object",
             "required": [
-                "clientId",
                 "longUrls"
             ],
             "properties": {
-                "clientId": {
-                    "type": "string"
-                },
                 "longUrls": {
                     "type": "array",
                     "items": {

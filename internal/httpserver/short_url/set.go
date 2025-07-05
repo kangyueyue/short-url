@@ -18,12 +18,17 @@ import (
 // @Param client_id header string true "客户端ID"
 // @Success 200 {object} http.Response{data=[]models.PShortUrlData} "成功返回短链接信息"
 // @Failure 500 {object} http.Response "服务器内部错误"
-// @Router /short_url/set [post]
+// @Router /short_url/set [put]
 func (s *ShortUrlSvr) Set(c *gin.Context) {
 	// 从请求中获取body
 	body := &vo.SetVo{}
 	if err := c.ShouldBindJSON(body); err != nil {
 		http.Fail(c, "参数错误")
+		return
+	}
+	client_id := c.GetHeader("client_id")
+	if client_id == "" {
+		http.Fail(c, "缺少请求头")
 		return
 	}
 	// 创建短链
@@ -34,7 +39,7 @@ func (s *ShortUrlSvr) Set(c *gin.Context) {
 			ShortUrlData: &models.ShortUrlData{
 				LongUrl:  longUrl,
 				ShortUrl: "aaabbb",
-				ClientId: body.ClientId,
+				ClientId: client_id,
 				ExpireAt: time.Now().AddDate(0, 0, 1), // 一年以后过期
 			},
 		}

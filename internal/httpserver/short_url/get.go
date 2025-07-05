@@ -21,15 +21,23 @@ import (
 func (s *ShortUrlSvr) Get(c *gin.Context) {
 	// 从请求中获取body
 	body := &vo.GetVO{}
-	client_id := c.GetHeader("client_id")
 	if err := c.ShouldBindJSON(body); err != nil {
 		http.Fail(c, "参数错误")
 		return
 	}
+	client_id := c.GetHeader("client_id")
+	if client_id == "" {
+		http.Fail(c, "缺少请求头")
+		return
+	}
+	filters := body.Filter
+	db := s.store.GetDB().WithContext(c).Where("client_id = ?", client_id)
+	for _, filter := range filters {
+		db = db.Where(filter.Field+" "+filter.Operator+" ?", filter.Value)
+	}
 	// 获取短链
 	var biz *models.PShortUrlData
-	db := s.store.GetDB().WithContext(c)
-	if err := db.Where("short_url = ? AND client_id = ?", body.ShortUrl, client_id).First(&biz).Error; err != nil {
+	if err := db.First(&biz).Error; err != nil {
 		http.Fail(c, "短链不存在")
 		return
 	}
